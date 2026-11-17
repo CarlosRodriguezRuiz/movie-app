@@ -16,6 +16,10 @@ router.get('/signup', auth.signupView);
  *   post:
  *     tags: [Auth]
  *     summary: Registrar usuario, abrir sesión y redirigir a /dashboard
+ *     description: >
+ *       Crea el usuario en PostgreSQL con la contraseña cifrada (bcrypt),
+ *       guarda el JWT en la cookie httpOnly "token" y redirige a /dashboard.
+ *       Si algo falla, vuelve a pintar el formulario de registro con el error.
  *     requestBody:
  *       required: true
  *       content:
@@ -24,12 +28,26 @@ router.get('/signup', auth.signupView);
  *             type: object
  *             required: [name, email, password]
  *             properties:
- *               name: { type: string }
- *               email: { type: string, format: email }
- *               password: { type: string, format: password }
+ *               name:
+ *                 type: string
+ *                 example: Ana
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: ana@test.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 minLength: 6
+ *                 example: '123456'
  *     responses:
- *       302: { description: Redirige a /dashboard }
- *       400: { description: Datos no válidos }
+ *       201:
+ *         description: Usuario creado. Deja la cookie "token" y redirige a /dashboard
+ *       400:
+ *         description: >
+ *           Datos no válidos (nombre vacío, email con formato incorrecto,
+ *           contraseña de menos de 6 caracteres) o el email ya está registrado.
+ *           Devuelve el formulario de registro con el mensaje de error.
  */
 router.post('/api/signup', auth.signup);
 

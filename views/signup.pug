@@ -4,6 +4,9 @@ extends layout
 block content
   section.auth
     h1 Crear cuenta
+    //- Si el controlador manda un error, se enseña aquí
+    if error
+      p.alert= error
     form.form(action="/api/signup" method="post")
       label(for="name") Nombre
       input#name(type="text" name="name" required)
