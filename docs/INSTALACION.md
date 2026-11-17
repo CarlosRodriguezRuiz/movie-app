@@ -79,7 +79,7 @@ Debe salir `* develop`.
 
 > También vale abrir *Query Tool* y ejecutar: `CREATE DATABASE movie_app;`
 
-**Solo creas la base de datos vacía.** Las tablas las crea el proyecto en el paso 6.
+**Solo creas la base de datos vacía.** Las tablas las crea el proyecto en el paso 7.
 
 ---
 
