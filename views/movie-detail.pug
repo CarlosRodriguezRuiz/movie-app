@@ -1,0 +1,12 @@
+//- Persona 2. Detalle de película: datos de la tarjeta + sinopsis, actores y rating.
+extends layout
+
+block content
+  if movie
+    article.movie-detail
+      img(src=movie.poster alt=`Póster de ${movie.title}`)
+      h1= movie.title
+      //- TODO (Persona 2): año, director, género, duración, sinopsis, actores, rating
+      //- TODO (Persona 3): botón "Añadir a Favoritos"
+  else
+    p No hay resultados

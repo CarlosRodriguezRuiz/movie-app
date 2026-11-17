@@ -1,0 +1,17 @@
+//- Plantilla base. Cada vista hace: extends layout  +  block content
+doctype html
+html(lang="es")
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    title= `${title ? title + ' · ' : ''}Movie App`
+    link(rel="stylesheet" href="/css/style.css")
+    block styles
+  body
+    //- El menú sale en todas las vistas privadas salvo el dashboard (showMenu = false)
+    if user && showMenu !== false
+      include partials/menu
+    main.container
+      block content
+    script(src="/js/main.js" defer)
+    block scripts

@@ -1,0 +1,17 @@
+//- Tarjeta de película compartida (búsqueda, favoritos y admin).
+//- Uso:  +movieCard(movie)  dentro de un bloque; el botón va en el bloque del mixin.
+//- Ejemplo:
+//-   +movieCard(movie)
+//-     button Añadir a Favoritos
+mixin movieCard(movie)
+  article.movie-card
+    img.movie-card__poster(src=movie.poster alt=`Póster de ${movie.title}` loading="lazy")
+    .movie-card__body
+      h3.movie-card__title= movie.title
+      ul.movie-card__info
+        li #[strong Año:] #{movie.year}
+        li #[strong Director:] #{movie.director}
+        li #[strong Género:] #{movie.genre}
+        li #[strong Duración:] #{movie.runtime}
+      .movie-card__actions
+        block

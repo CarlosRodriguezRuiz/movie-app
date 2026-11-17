@@ -1,0 +1,11 @@
+//- Persona 1. Lista de usuarios con CRUD (solo admin).
+extends layout
+
+block content
+  h1 Usuarios
+  //- TODO (Persona 1): crear, editar y borrar usuarios
+  ul.user-list
+    each u in users
+      li #{u.name} · #{u.email} · #{u.role}
+    else
+      li No hay usuarios

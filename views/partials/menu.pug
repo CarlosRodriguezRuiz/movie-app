@@ -1,0 +1,17 @@
+//- Menú hamburguesa con efecto persiana. Depende del rol del usuario logueado.
+header.topbar
+  a.brand(href=user.role === 'admin' ? '/movies' : '/dashboard') 🎬 Movie App
+  button.menu-toggle(type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="menu") ☰
+  nav#menu.menu
+    ul
+      if user.role === 'admin'
+        li: a(href="/movies") Películas
+        li: a(href="/users") Usuarios
+      else
+        li: a(href="/dashboard") Panel de control
+        li: a(href="/search") Buscar
+        li: a(href="/favorites") Mis películas
+      li: a(href="/profile") Perfil
+      li
+        form(action="/api/logout" method="post")
+          button.link-button(type="submit") Salir

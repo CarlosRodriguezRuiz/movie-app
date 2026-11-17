@@ -1,0 +1,14 @@
+//- Persona 3. Gestión de películas del admin (MongoDB).
+extends layout
+include partials/movie-card
+
+block content
+  h1 Gestionar películas
+  //- TODO (Persona 3): formulario de crear/editar (título, imagen, año, director, género, duración) con validación
+  button.btn(type="button") Crear nueva
+  .movie-grid
+    each movie in movies
+      +movieCard(movie)
+        button.btn.btn--secondary(type="button" data-id=movie.id) Editar
+        //- Pedir confirmación antes de borrar
+        button.btn.btn--danger(type="button" data-id=movie.id) Eliminar

@@ -1,0 +1,16 @@
+//- Persona 1. Vista de /signup
+extends layout
+
+block content
+  section.auth
+    h1 Crear cuenta
+    form.form(action="/api/signup" method="post")
+      label(for="name") Nombre
+      input#name(type="text" name="name" required)
+      label(for="email") Email
+      input#email(type="email" name="email" required)
+      label(for="password") Contraseña
+      input#password(type="password" name="password" required minlength="6")
+      button.btn(type="submit") Registrarme
+    a.btn.btn--google(href="/auth/google") Registrarme con Google
+    p ¿Ya tienes cuenta? #[a(href="/login") Entra]

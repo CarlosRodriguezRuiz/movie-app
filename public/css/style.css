@@ -1,0 +1,251 @@
+/* =========================================================
+   Estilos base MOBILE-FIRST: primero móvil, luego @media (min-width) para pantallas grandes.
+   Usad siempre las variables de :root para que todo quede igual.
+   ========================================================= */
+:root {
+  --color-bg: #111318;
+  --color-surface: #1c1f26;
+  --color-text: #f2f2f2;
+  --color-muted: #a0a4ad;
+  --color-primary: #f5c518;
+  --color-danger: #e5484d;
+  --radius: 10px;
+  --space: 1rem;
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+a {
+  color: var(--color-primary);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.container {
+  padding: var(--space);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1.2rem;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: #000;
+  font: inherit;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn--secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-muted);
+}
+.btn--danger {
+  background: var(--color-danger);
+  color: #fff;
+}
+.btn--google {
+  background: #fff;
+  color: #222;
+}
+.link-button,
+.icon-button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+.icon-button {
+  font-size: 1.6rem;
+}
+
+/* ---------- Formularios ---------- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.form input,
+.search input {
+  padding: 0.7rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-muted);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+.auth {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space);
+  max-width: 420px;
+  margin: 2rem auto;
+}
+.search {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: var(--space);
+}
+.search input {
+  flex: 1;
+}
+
+/* ---------- Menú hamburguesa (persiana) ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0.75rem var(--space);
+  background: var(--color-surface);
+}
+.brand {
+  color: var(--color-text);
+  font-weight: 700;
+  text-decoration: none;
+}
+.menu-toggle {
+  background: none;
+  border: 0;
+  color: var(--color-text);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+.menu {
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.menu--open {
+  max-height: 400px;
+}
+.menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+.menu li a,
+.menu .link-button {
+  display: block;
+  padding: 0.6rem 0;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+/* ---------- Dashboard ---------- */
+.dashboard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dashboard {
+  display: grid;
+  gap: var(--space);
+}
+.dashboard__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+.dashboard__icon {
+  font-size: 3rem;
+}
+
+/* ---------- Tarjetas de película ---------- */
+.movie-grid {
+  display: grid;
+  gap: var(--space);
+}
+.movie-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+.movie-card__poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+.movie-card__body {
+  padding: var(--space);
+}
+.movie-card__title {
+  margin: 0 0 0.5rem;
+}
+.movie-card__info {
+  list-style: none;
+  margin: 0 0 var(--space);
+  padding: 0;
+  color: var(--color-muted);
+}
+.movie-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---------- Tablet ---------- */
+@media (min-width: 600px) {
+  .movie-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---------- Escritorio ---------- */
+@media (min-width: 960px) {
+  .movie-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .menu-toggle {
+    display: none;
+  }
+  .menu {
+    width: auto;
+    max-height: none;
+  }
+  .menu ul {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0;
+  }
+}

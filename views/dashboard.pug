@@ -1,0 +1,15 @@
+//- Persona 1. Panel de control del usuario: sin menú (el controlador pasa showMenu: false), solo icono de salir.
+extends layout
+
+block content
+  header.dashboard__header
+    h1 Hola, #{user.name}
+    form(action="/api/logout" method="post")
+      button.icon-button(type="submit" aria-label="Salir") ⏻
+  .dashboard
+    a.dashboard__tile(href="/search")
+      span.dashboard__icon 🔍
+      span Buscar películas
+    a.dashboard__tile(href="/favorites")
+      span.dashboard__icon ⭐
+      span Mis películas

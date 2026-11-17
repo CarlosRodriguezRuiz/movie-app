@@ -1,0 +1,13 @@
+//- Persona 1. Perfil del usuario o admin logueado (editable).
+extends layout
+
+block content
+  h1 Mi perfil
+  //- TODO (Persona 1): formulario editable -> PUT /api/user
+  dl.profile
+    dt Nombre
+    dd= user.name
+    dt Email
+    dd= user.email
+    dt Rol
+    dd= user.role

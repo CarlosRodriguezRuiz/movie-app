@@ -1,0 +1,15 @@
+//- Persona 2. Buscador y resultados.
+extends layout
+include partials/movie-card
+
+block content
+  h1 Buscar películas
+  form.search(action="/search" method="get")
+    input(type="search" name="title" placeholder="Título de la película" required)
+    button.btn(type="submit") Buscar
+  //- TODO (Persona 2): mostrar "No hay resultados" si la búsqueda no devuelve nada
+  .movie-grid
+    each movie in movies
+      +movieCard(movie)
+        a.btn.btn--secondary(href=`/search/${encodeURIComponent(movie.title)}`) Ver detalle
+        //- TODO (Persona 3): botón "Añadir a Favoritos" -> POST /api/favorites { movieId, source }

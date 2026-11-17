@@ -1,0 +1,13 @@
+//- Persona 3. "Mis películas" del usuario.
+extends layout
+include partials/movie-card
+
+block content
+  h1 Mis películas
+  if !movies.length
+    p Todavía no has añadido películas. #[a(href="/search") Busca alguna]
+  .movie-grid
+    each movie in movies
+      +movieCard(movie)
+        //- TODO (Persona 3): DELETE /api/favorites { movieId, source }
+        button.btn.btn--danger(type="button" data-id=movie.id data-source=movie.source) Quitar de Mis películas
