@@ -269,7 +269,28 @@ Si has llegado aquí con los 24 tests en verde y la app arrancada:
 - **`'node' / 'npm' no se reconoce como un comando`**: Node no está instalado, o hay que cerrar y volver a abrir la terminal (y VS Code) después de instalarlo.
 - **En PowerShell sale `la ejecución de scripts está deshabilitada`** al usar `npm`: abre la terminal **Git Bash** o **Command Prompt** en VS Code y usa esa.
 - **`npm install` da errores rojos**: comprueba que estás dentro de la carpeta `movie-app` (debe existir `package.json`) y vuelve a intentarlo. Los avisos amarillos (`WARN`) se pueden ignorar.
-- **`❌ PostgreSQL no disponible: password authentication failed`**: la contraseña de `PGPASSWORD` no es la de tu PostgreSQL. Revisa el `.env` (sin espacios ni comillas).
+- **`client password must be a string`**: a PostgreSQL no le llega ninguna contraseña. Mira que el archivo se llama exactamente `.env` (no `.env.txt` ni `.env.example`), que la línea `PGPASSWORD=` tiene algo detrás y que lo has **guardado** (`Ctrl + S`).
+- **`password authentication failed` / `la autentificación password falló para el usuario «postgres»`**: la contraseña de `PGPASSWORD` no es la de tu PostgreSQL. Revisa el `.env` (sin espacios ni comillas). Si **no recuerdas la contraseña**, mira la solución de abajo.
+
+### 🔑 No recuerdo la contraseña de PostgreSQL
+
+No se puede «ver», pero no hace falta: crea un **usuario solo para este proyecto**. Así no tocas tus otras bases de datos ni sus contraseñas.
+
+1. En pgAdmin, clic en la base **movie_app** → botón **Query Tool**. Si pgAdmin entra sin pedirte contraseña, es que la tiene guardada.
+2. Pega esto y ejecútalo con ▶ (o `F5`):
+   ```sql
+   CREATE ROLE movie_app_user WITH LOGIN PASSWORD 'movieapp123';
+   ALTER DATABASE movie_app OWNER TO movie_app_user;
+   ```
+   Abajo, en **Messages**, debe salir *Query returned successfully*.
+3. En tu `.env` cambia estas dos líneas y **guarda**:
+   ```
+   PGUSER=movie_app_user
+   PGPASSWORD=movieapp123
+   ```
+4. Ejecuta `npm run db:init` y después `npm run dev`. Debe salir `✅ PostgreSQL conectado`.
+
+> Si `CREATE ROLE` da `role "movie_app_user" already exists`, ya lo creaste antes: salta al paso 3.
 - **`database "movie_app" does not exist`**: te falta el paso 3 (crear la base de datos en pgAdmin).
 - **`connect ECONNREFUSED 127.0.0.1:5432`**: PostgreSQL no está arrancado. En Windows: tecla Windows → *Servicios* → busca **postgresql** → *Iniciar*.
 - **`❌ MongoDB no disponible` / `ECONNREFUSED 127.0.0.1:27017`**: MongoDB no está arrancado. En Windows: *Servicios* → **MongoDB Server** → *Iniciar*.
