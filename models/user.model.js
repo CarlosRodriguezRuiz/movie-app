@@ -2,7 +2,7 @@
  * Consultas SQL de usuarios (tabla "users", ver db/schema.sql). Responsable: Persona 1 (Auth y usuarios).
  * @module models/user
  */
-// eslint-disable-next-line no-unused-vars
+
 const { query } = require('../config/db.sql');
 
 /**
@@ -17,4 +17,19 @@ const { query } = require('../config/db.sql');
 
 // TODO (Persona 1): getAll, getById, getByEmail, create, update, remove
 
-module.exports = {};
+const getByEmail = async (email) => {
+  const { rows } = await query('SELECT * FROM users WHERE email = $1', [email]);
+  return rows[0];
+};
+
+const create = async (name, email, password, provider = 'local') => {
+  const { rows } = await query(
+    `INSERT INTO users (name, email, password, provider)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, name, email, role`,
+    [name, email, password, provider]
+  );
+  return rows[0];
+};
+
+module.exports = { getByEmail, create };
