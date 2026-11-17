@@ -1,73 +1,62 @@
 # Cómo trabajamos con Git
 
-## Ramas
+## Las ramas
 
 ```
-main      ← solo lo que se entrega. Nadie sube cambios directamente.
-develop   ← integración. Todo entra aquí por Pull Request.
-feature/* ← una rama por tarea del backlog, sale de develop.
-fix/*     ← para arreglar bugs.
+main                    ← la versión buena, la que se entrega
+ └─ develop             ← aquí juntamos el trabajo de todos
+     ├─ feature_registro
+     ├─ feature_api_omdb
+     └─ feature_...     ← una rama por cada tarea de Trello
 ```
 
-Nombres: `feature/login-jwt`, `feature/omdb-service`, `feature/favorites-api`, `fix/menu-mobile`…
+- Cada tarea de Trello tiene su rama. **El nombre está arriba del todo en la tarjeta.**
+- Las ramas siempre se crean **desde `develop`**.
+- Nadie puede subir directamente a `main` ni a `develop` (GitHub no te deja). Todo entra por **Pull Request**.
 
-## Flujo de cada tarea
+## Los pasos de cada tarea
 
-1. Coge una tarea del backlog y muévela a "En curso".
-2. Actualiza `develop` y crea tu rama:
-   ```bash
-   git switch develop
-   git pull
-   git switch -c feature/nombre-tarea
-   ```
-3. TDD: escribe el test, verlo fallar, escribe el código, verlo pasar.
-4. Haz commits pequeños y frecuentes (ver formato abajo).
-5. Antes de abrir el PR, trae lo último de `develop` y comprueba que los tests pasan:
-   ```bash
-   git pull origin develop
-   npm test
-   ```
-6. Sube la rama y abre un **Pull Request hacia `develop`** (no hacia `main`).
-7. **Otra persona** del equipo lo revisa y lo aprueba. Nadie mergea su propio PR.
-8. Después del merge, borra la rama.
+**1. Antes de empezar:**
 
-`develop` se mergea en `main` al final de cada sprint, cuando todo funciona.
+```bash
+git checkout develop
+git pull
+git checkout -b feature_nombre_de_la_tarea
+```
 
-## Commits
+**2. Para guardar tu trabajo** (cuando algo funcione o al final del día):
 
-Formato: `tipo: descripción en presente`
+```bash
+git add .
+git commit -m "lo que has hecho"
+git push origin feature_nombre_de_la_tarea
+```
 
-| Tipo | Para |
-|---|---|
-| `feat` | funcionalidad nueva |
-| `fix` | arreglo de un bug |
-| `test` | tests |
-| `docs` | documentación (README, JSDoc, Swagger) |
-| `style` | CSS / formato |
-| `refactor` | cambiar código sin cambiar lo que hace |
-| `chore` | configuración, dependencias |
+**3. Cuando termines la tarea:**
 
-Ejemplos: `feat: login con JWT en cookie`, `test: tests de omdb.service`, `fix: menú no se cierra en móvil`.
+1. Comprueba que todo funciona con `npm test`.
+2. En GitHub, pulsa **Compare & pull request**.
+3. Comprueba que pone **develop ← feature_nombre_de_la_tarea**.
+4. Crea la Pull Request y avisa a un compañero para que la revise.
+5. Cuando la apruebe, pulsa **Merge pull request**.
 
-## Archivos compartidos (avisar antes de tocarlos)
+**4. Para empezar la siguiente tarea**, vuelve al paso 1.
 
-Estos archivos los usamos los tres. Si hay que cambiarlos, avísalo en el grupo y hazlo en un PR pequeño y separado:
+## Revisar la Pull Request de un compañero
 
-- `app.js`, `package.json`
-- `models/movie.model.js` (el formato de película)
-- `middlewares/auth.middleware.js`
-- `views/layout.pug`, `views/partials/*`, `public/css/style.css` (la parte de `:root` y las clases comunes)
-- `db/schema.sql`
+1. En GitHub, ve a la pestaña **Pull requests** y abre la suya.
+2. En **Files changed** ves lo que ha cambiado.
+3. Si está bien, pulsa **Review changes**, luego **Approve** y luego **Submit review**.
 
-**Dependencias nuevas:** quien la instala sube `package.json` **y** `package-lock.json` en el mismo commit.
+## Si algo sale mal
 
-## Conflictos
+- **He trabajado en develop sin crear mi rama:** escribe `git checkout -b feature_nombre_de_la_tarea` y tus cambios se pasan a la rama nueva.
+- **GitHub dice "rejected" al hacer push:** estás en `develop`. Crea tu rama (punto anterior).
+- **GitHub dice que hay conflictos en mi Pull Request:** avisa al Scrum Master y lo resolvemos juntos.
+- **No sé qué ha pasado:** no borres nada ni uses `--force`. Pregunta en el grupo.
 
-Si al hacer `git pull origin develop` hay conflictos:
-1. Abre los archivos marcados y decide qué código se queda (si es código de otro, pregúntale).
-2. Comprueba que `npm test` pasa.
-3. Después:
-   ```bash
-   git add .
-   git commit
-   ```
+## Reglas básicas
+
+- Nunca subas el archivo `.env`, porque tiene contraseñas.
+- Si instalas un paquete nuevo con npm, avisa al grupo.
+- Los archivos que usamos todos (`app.js`, `package.json`, `views/layout.pug`, `public/css/style.css`, `models/movie.model.js`) no se tocan sin avisar.
