@@ -7,38 +7,99 @@
 
 /**
  * Formato común de película en toda la app (venga de OMDB o de Mongo).
+ * Los campos que OMDB no informa ("N/A") llegan como null.
  * @typedef {Object} Movie
  * @property {string} id - imdbID (OMDB) o _id (Mongo)
  * @property {'omdb'|'mongo'} source
  * @property {string} title
- * @property {string} poster
- * @property {string} year
- * @property {string} director
- * @property {string} genre
- * @property {string} runtime
- * @property {string} [plot]
- * @property {string} [actors]
- * @property {string} [rating]
+ * @property {string|null} poster
+ * @property {string|null} year
+ * @property {string|null} director
+ * @property {string|null} genre
+ * @property {string|null} runtime
+ * @property {string|null} [plot]
+ * @property {string|null} [actors]
+ * @property {string|null} [rating] - imdbRating como texto (ej. "8.7")
  */
 
+const BASE_URL = 'https://www.omdbapi.com/';
+
 /**
- * Busca películas por título en OMDB.
- * @param {string} title
- * @returns {Promise<Movie[]>} lista vacía si no hay resultados
+ * OMDB usa "N/A" cuando falta un dato: lo convertimos a null.
+ * @param {*} value
+ * @returns {*}
  */
-const searchByTitle = async (title) => {
-  // TODO (Persona 2): GET https://www.omdbapi.com/?apikey=...&s=title y normalizar a Movie
-  throw new Error('omdb.searchByTitle no implementado');
+const clean = (value) =>
+  value === undefined || value === null || value === 'N/A' ? null : value;
+
+/**
+ * Convierte una película de OMDB (detalle completo) al formato común Movie.
+ * @param {Object} omdbMovie - Respuesta de OMDB (?i=)
+ * @returns {Movie}
+ */
+const normalize = (omdbMovie) => ({
+  id: omdbMovie.imdbID,
+  source: 'omdb',
+  title: clean(omdbMovie.Title),
+  poster: clean(omdbMovie.Poster),
+  year: clean(omdbMovie.Year),
+  director: clean(omdbMovie.Director),
+  genre: clean(omdbMovie.Genre),
+  runtime: clean(omdbMovie.Runtime),
+  plot: clean(omdbMovie.Plot),
+  actors: clean(omdbMovie.Actors),
+  rating: clean(omdbMovie.imdbRating),
+});
+
+/**
+ * Hace la petición a OMDB y devuelve el JSON.
+ * La API key se lee en cada llamada desde process.env.OMDB_API_KEY.
+ * @param {Object} params - Parámetros de la query (s, i, plot...)
+ * @returns {Promise<Object>}
+ */
+const request = async (params) => {
+  const apiKey = process.env.OMDB_API_KEY;
+  if (!apiKey) throw new Error('Falta OMDB_API_KEY en el .env');
+
+  const url = new URL(BASE_URL);
+  url.search = new URLSearchParams({ apikey: apiKey, ...params }).toString();
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`OMDB respondió con estado ${res.status}`);
+
+  const data = await res.json();
+  if (data.Response === 'False' && data.Error === 'Invalid API key!') {
+    throw new Error('OMDB_API_KEY no es válida');
+  }
+  return data;
 };
 
 /**
  * Obtiene una película de OMDB por su imdbID (lo necesita también Favoritos).
  * @param {string} imdbId
- * @returns {Promise<Movie|null>}
+ * @returns {Promise<Movie|null>} null si no existe
  */
 const getById = async (imdbId) => {
-  // TODO (Persona 2): GET https://www.omdbapi.com/?apikey=...&i=imdbId&plot=full
-  throw new Error('omdb.getById no implementado');
+  const data = await request({ i: imdbId, plot: 'full' });
+  if (data.Response === 'False') return null;
+  return normalize(data);
 };
 
-module.exports = { searchByTitle, getById };
+/**
+ * Busca películas por título en OMDB.
+ * ?s= no trae director, género ni duración, así que se pide el detalle
+ * de cada resultado con getById.
+ * @param {string} title
+ * @returns {Promise<Movie[]>} lista vacía si no hay resultados
+ */
+const searchByTitle = async (title) => {
+  const data = await request({ s: title });
+  if (data.Response === 'False') return [];
+
+  const movies = await Promise.all(
+    data.Search.map((item) => getById(item.imdbID))
+  );
+  return movies.filter(Boolean);
+};
+
+module.exports = { searchByTitle, getById, normalize };
