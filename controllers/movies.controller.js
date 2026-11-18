@@ -1,65 +1,66 @@
 /**
-- Gestión de películas del Administrador (MongoDB). Responsable: Persona 3.
-- @module controllers/movies
+ * Gestión de películas del Administrador (MongoDB). Responsable: Persona 3.
+ * - VISTA: GET /movies → pinta el panel (render).
+ * - API:   /api/movie → crea, edita y borra. Responde SIEMPRE en JSON.
+ * Los errores inesperados los recoge errorHandler (Express 5 los reenvía solo).
+ * @module controllers/movies
  */
+const { isObjectIdOrHexString } = require('mongoose');
 const Movie = require('../models/movie.model');
-const Favorite = require('../models/favorite.model'); // Importar el modelo de favoritos para limpiar al borrar
+const Favorite = require('../models/favorite.model');
 
-// ---- Vistas / Acciones de Admin ----
+// ---- VISTA ----
 
-/** GET /admin/movies: listado con botón "Crear nueva" + Editar / Eliminar */
+/**
+ * GET /movies: listado del admin con "Crear nueva", "Editar" y "Eliminar".
+ */
 const adminMoviesView = async (req, res) => {
-  try {
-    const movies = await Movie.find().sort({ createdAt: -1 });
-    res.render('admin-movies', { title: 'Gestionar películas', movies });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send('Error al cargar las películas');
-  }
+  const docs = await Movie.find().sort({ createdAt: -1 });
+  const movies = docs.map((doc) => doc.toMovie());
+  return res.render('admin-movies', { title: 'Gestionar películas', movies });
 };
 
-// Crear película
+// ---- API (JSON) ----
+
+/**
+ * POST /api/movie: crea la película y la devuelve.
+ * Los datos ya llegan validados por las rutas (express-validator).
+ */
 const createMovie = async (req, res) => {
-  try {
-    await Movie.create(req.body);
-    res.redirect('/admin/movies');
-  } catch (error) {
-    console.log(error);
-    res.status(500).send('Error al crear la película');
-  }
+  const doc = await Movie.create(req.body);
+  return res.status(201).json(doc.toMovie());
 };
 
-// Editar una película
+/**
+ * PUT /api/movie/:id: edita la película y la devuelve ya cambiada.
+ */
 const updateMovie = async (req, res) => {
-  try {
-    const movieId = req.params.id;
-    await Movie.findByIdAndUpdate(movieId, req.body, { new: true, runValidators: true });
-    res.redirect('/admin/movies');
-  } catch (error) {
-    console.log(error);
-    res.status(500).send('Error al actualizar la película');
+  const { id } = req.params;
+  if (!isObjectIdOrHexString(id)) {
+    return res.status(404).json({ error: 'Película no encontrada' });
   }
+  const doc = await Movie.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+  if (!doc) {
+    return res.status(404).json({ error: 'Película no encontrada' });
+  }
+  return res.json(doc.toMovie());
 };
 
-// Borrar película (incluyendo sus favoritos asociados)
+/**
+ * DELETE /api/movie/:id: borra la película y después sus favoritos (PostgreSQL).
+ */
 const deleteMovie = async (req, res) => {
-  try {
-    const movieId = req.params.id;
-
-    // Eliminar también sus favoritos asociados como indicaba la nota
-    if (typeof Favorite.removeByMovie === 'function') {
-      await Favorite.removeByMovie(movieId);
-    } else {
-      await Favorite.deleteMany({ movie: movieId });
-    }
-
-    // Borrar la película
-    await Movie.findByIdAndDelete(movieId);
-    res.redirect('/admin/movies');
-  } catch (error) {
-    console.log(error);
-    res.status(500).send('Error al borrar la película');
+  const { id } = req.params;
+  if (!isObjectIdOrHexString(id)) {
+    return res.status(404).json({ error: 'Película no encontrada' });
   }
+  const doc = await Movie.findByIdAndDelete(id);
+  if (!doc) {
+    return res.status(404).json({ error: 'Película no encontrada' });
+  }
+  // Si nadie la tenía en favoritos, no pasa nada
+  await Favorite.removeByMovie(id, 'mongo');
+  return res.json({ message: 'Película borrada', id });
 };
 
 module.exports = { adminMoviesView, createMovie, updateMovie, deleteMovie };
