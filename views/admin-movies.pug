@@ -7,8 +7,9 @@ block content
     h1 Gestionar películas
     button#btn-new.btn(type="button") + Crear nueva
 
-  //- Mismo formulario para crear y para editar (oculto por defecto)
-  form#movie-form.form.panel(hidden novalidate action="/admin/movies", method="POST")
+  //- Mismo formulario para crear y para editar (oculto por defecto).
+  //- Lo envía admin-movies.js con fetch (POST para crear, PUT para editar).
+  form#movie-form.form.panel(hidden novalidate)
     h2#form-title Crear o Editar película
     ul#form-errors.errors(hidden)
     .form-grid
@@ -28,16 +29,16 @@ block content
         input(name="rating" inputmode="decimal" placeholder="7,5")
       label Actores
         input(name="actors" placeholder="Actor 1, Actor 2")
-    
+
     label Sinopsis
       textarea(name="plot" rows="3")
-      
+
     .form-actions
       button.btn(type="submit") Guardar
       button#btn-cancel.btn.btn--secondary(type="button") Cancelar
 
   p.muted Aquí solo están las películas que NO existen en OMDB. Las de OMDB no se guardan en la base de datos.
-  
+
   if !movies.length
     p.muted Todavía no hay películas. Crea la primera.
 
@@ -45,9 +46,7 @@ block content
     each movie in movies
       +movieCard(movie)
         button.btn.btn--secondary.btn-edit(type="button" data-movie=JSON.stringify(movie)) Editar
-        
-        form(action=`/admin/movies/delete/${movie.id}`, method="POST", style="display:inline;")
-          button.btn.btn--danger(type="submit", onclick="return confirm('¿Estás seguro de que deseas eliminar esta película?');") Eliminar
+        button.btn.btn--danger.btn-delete(type="button" data-id=movie.id) Eliminar
 
 block scripts
-  script(src="/js/admin-movies.js")
+  script(src="/js/admin-movies.js" defer)

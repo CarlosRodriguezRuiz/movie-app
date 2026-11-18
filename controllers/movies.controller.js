@@ -45,14 +45,14 @@ const updateMovie = async (req, res) => {
 const deleteMovie = async (req, res) => {
   try {
     const movieId = req.params.id;
-    
+
     // Eliminar también sus favoritos asociados como indicaba la nota
     if (typeof Favorite.removeByMovie === 'function') {
       await Favorite.removeByMovie(movieId);
     } else {
       await Favorite.deleteMany({ movie: movieId });
     }
-    
+
     // Borrar la película
     await Movie.findByIdAndDelete(movieId);
     res.redirect('/admin/movies');
