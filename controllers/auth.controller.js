@@ -7,8 +7,6 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user.model');
 const { signToken } = require('../middlewares/auth.middleware');
 
-const notImplemented = require('../utils/notImplemented');
-
 // ---- Vistas ----
 /** GET / y GET /login: formulario de login (+ botón de Google) */
 const loginView = (req, res) => res.render('login', { title: 'Entrar' });
@@ -62,8 +60,46 @@ const signup = async (req, res) => {
   return res.redirect('/dashboard');
 };
 
-// TODO: comprobar credenciales, signToken(), cookie; redirect /dashboard (user) o /movies (admin)
-const login = notImplemented('POST /api/login');
+/**
+ * POST /api/login: comprueba email y contraseña, abre sesión y redirige según el rol.
+ */
+const login = async (req, res) => {
+  const email = req.body.email?.trim().toLowerCase();
+  const { password } = req.body;
+
+  // Si algo falla, volvemos al login con el mismo mensaje siempre
+  // (no decimos si lo que falla es el email o la contraseña)
+  const fail = () => {
+    return res.status(401).render('login', {
+      title: 'Entrar',
+      error: 'Email o contraseña incorrectos',
+      form: { email },
+    });
+  };
+  if (!email || !password) {
+    return fail();
+  }
+  const user = await User.getByEmail(email);
+  if (!user) {
+    return fail();
+  }
+  //Si se registró con Google no tiene contraseña: no puede entrar por aquí
+  if (!user.password) {
+    return fail();
+  }
+  //Comparar la contraseña escrita con la cifrada que hay en la BBDD
+  const passwordOk = await bcrypt.compare(password, user.password);
+  if (!passwordOk) {
+    return fail();
+  }
+  // 5. Abrir sesión: el JWT va en una cookie httpOnly (igual que en el registro)
+  res.cookie('token', signToken(user), { httpOnly: true });
+  // 6. Cada uno a su sitio según el rol
+  if (user.role === 'admin') {
+    return res.redirect('/movies');
+  }
+  return res.redirect('/dashboard');
+};
 
 /** POST /api/logout: borra la cookie y vuelve al inicio */
 const logout = (req, res) => {
