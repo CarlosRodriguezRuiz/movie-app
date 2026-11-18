@@ -132,3 +132,14 @@ describe('POST /api/login', () => {
     expect(res.text).toContain('Email o contraseña incorrectos');
   });
 });
+
+describe('POST /api/logout', () => {
+  test('borra la cookie y redirige al login', async () => {
+    const res = await request(app).post('/api/logout');
+
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/');
+    // clearCookie deja la cookie vacía: "token=; ..."
+    expect(res.headers['set-cookie'][0]).toMatch(/^token=;/);
+  });
+});

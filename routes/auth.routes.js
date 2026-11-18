@@ -56,18 +56,6 @@ router.post('/api/signup', auth.signup);
  * /api/login:
  *   post:
  *     tags: [Auth]
- *     summary: Validar credenciales y abrir sesión (JWT en cookie)
- *     responses:
- *       302: { description: Redirige a /dashboard (user) o /movies (admin) }
- *       401: { description: Credenciales incorrectas }
- */
-router.post('/api/login', auth.login);
-
-/**
- * @openapi
- * /api/login:
- *   post:
- *     tags: [Auth]
  *     summary: Iniciar sesión con email y contraseña
  *     description: >
  *       Busca el usuario por email y compara la contraseña con bcrypt.
@@ -101,6 +89,19 @@ router.post('/api/login', auth.login);
  *           formulario de login con el mensaje de error.
  */
 router.post('/api/login', auth.login);
+
+/**
+ * @openapi
+ * /api/logout:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Cerrar sesión
+ *     description: Borra la cookie "token" (el JWT) y redirige al login.
+ *     responses:
+ *       302:
+ *         description: Sesión cerrada. Redirige a /
+ */
+router.post('/api/logout', auth.logout);
 
 // TODO (Persona 1): OAuth con Google (passport-google-oauth20)
 // router.get('/auth/google', ...);

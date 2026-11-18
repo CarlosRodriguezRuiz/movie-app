@@ -103,8 +103,8 @@ const login = async (req, res) => {
 
 /** POST /api/logout: borra la cookie y vuelve al inicio */
 const logout = (req, res) => {
-  res.clearCookie('token');
-  return res.redirect('/');
+  res.clearCookie('token');// borra la cookie donde va el JWT
+  return res.redirect('/'); // vuelve al login
 };
 
 module.exports = { loginView, signupView, signup, login, logout };
