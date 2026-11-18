@@ -36,14 +36,23 @@ const verifyToken = (req, res, next) => {
  * @example
  * router.get('/movies', verifyToken, requireRole('admin'), controller.adminMovies);
  */
-const requireRole =
-  (...roles) =>
-  (req, res, next) => {
-    if (req.user && roles.includes(req.user.role)) return next();
-    if (isApiRequest(req)) return res.status(403).json({ msg: 'Acceso no permitido' });
-    // Cada rol vuelve a "su" zona
-    return res.redirect(req.user?.role === 'admin' ? '/movies' : '/dashboard');
+const requireRole = (...roles) => {
+  return (req, res, next) => {
+    // ¿Tiene uno de los roles permitidos?
+    if (req.user && roles.includes(req.user.role)) {
+      return next();
+    }
+    // No tiene permiso. Si es la API, respondemos JSON
+    if (isApiRequest(req)) {
+      return res.status(403).json({ msg: 'Acceso no permitido' });
+    }
+    // Si es una página, lo mandamos a su zona
+    if (req.user?.role === 'admin') {
+      return res.redirect('/movies');
+    }
+    return res.redirect('/dashboard');
   };
+};
 
 /**
  * Genera el JWT de un usuario. Úsalo en login, signup y callback de OAuth.

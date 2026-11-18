@@ -24,7 +24,7 @@ router.get('/signup', auth.signupView);
  *       required: true
  *       content:
  *         application/x-www-form-urlencoded:
- *           schema:
+ *            schema:
  *             type: object
  *             required: [name, email, password]
  *             properties:
@@ -65,14 +65,42 @@ router.post('/api/login', auth.login);
 
 /**
  * @openapi
- * /api/logout:
+ * /api/login:
  *   post:
  *     tags: [Auth]
- *     summary: Cerrar sesión y redirigir a /
+ *     summary: Iniciar sesión con email y contraseña
+ *     description: >
+ *       Busca el usuario por email y compara la contraseña con bcrypt.
+ *       Si es correcta, guarda el JWT en la cookie httpOnly "token"
+ *       y redirige según el rol. Usuarios de prueba: user@test.com y
+ *       admin@test.com (contraseña 123456).
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             required: [email, password]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: user@test.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: '123456'
  *     responses:
- *       302: { description: Redirige a / }
+ *       302:
+ *         description: >
+ *           Login correcto. Deja la cookie "token" y redirige a /dashboard
+ *           (user) o a /movies (admin).
+ *       401:
+ *         description: >
+ *           Email o contraseña incorrectos (o faltan datos). Devuelve el
+ *           formulario de login con el mensaje de error.
  */
-router.post('/api/logout', auth.logout);
+router.post('/api/login', auth.login);
 
 // TODO (Persona 1): OAuth con Google (passport-google-oauth20)
 // router.get('/auth/google', ...);
