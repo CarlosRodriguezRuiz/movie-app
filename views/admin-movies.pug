@@ -3,12 +3,51 @@ extends layout
 include partials/movie-card
 
 block content
-  h1 Gestionar películas
-  //- TODO (Persona 3): formulario de crear/editar (título, imagen, año, director, género, duración) con validación
-  button.btn(type="button") Crear nueva
+  .page-header
+    h1 Gestionar películas
+    button#btn-new.btn(type="button") + Crear nueva
+
+  //- Mismo formulario para crear y para editar (oculto por defecto)
+  form#movie-form.form.panel(hidden novalidate action="/admin/movies", method="POST")
+    h2#form-title Crear o Editar película
+    ul#form-errors.errors(hidden)
+    .form-grid
+      label Título *
+        input(name="title" required)
+      label URL de la imagen *
+        input(name="poster" type="url" required placeholder="https://...")
+      label Año *
+        input(name="year" required type="number" placeholder="2024")
+      label Director *
+        input(name="director" required)
+      label Género *
+        input(name="genre" required placeholder="Comedia, Drama")
+      label Duración *
+        input(name="runtime" required placeholder="95 min")
+      label Rating (0-10)
+        input(name="rating" inputmode="decimal" placeholder="7,5")
+      label Actores
+        input(name="actors" placeholder="Actor 1, Actor 2")
+    
+    label Sinopsis
+      textarea(name="plot" rows="3")
+      
+    .form-actions
+      button.btn(type="submit") Guardar
+      button#btn-cancel.btn.btn--secondary(type="button") Cancelar
+
+  p.muted Aquí solo están las películas que NO existen en OMDB. Las de OMDB no se guardan en la base de datos.
+  
+  if !movies.length
+    p.muted Todavía no hay películas. Crea la primera.
+
   .movie-grid
     each movie in movies
       +movieCard(movie)
-        button.btn.btn--secondary(type="button" data-id=movie.id) Editar
-        //- Pedir confirmación antes de borrar
-        button.btn.btn--danger(type="button" data-id=movie.id) Eliminar
+        button.btn.btn--secondary.btn-edit(type="button" data-movie=JSON.stringify(movie)) Editar
+        
+        form(action=`/admin/movies/delete/${movie.id}`, method="POST", style="display:inline;")
+          button.btn.btn--danger(type="submit", onclick="return confirm('¿Estás seguro de que deseas eliminar esta película?');") Eliminar
+
+block scripts
+  script(src="/js/admin-movies.js")
