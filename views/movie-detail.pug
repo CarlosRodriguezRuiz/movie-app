@@ -4,9 +4,20 @@ extends layout
 block content
   if movie
     article.movie-detail
-      img(src=movie.poster alt=`Póster de ${movie.title}`)
-      h1= movie.title
-      //- TODO (Persona 2): año, director, género, duración, sinopsis, actores, rating
-      //- TODO (Persona 3): botón "Añadir a Favoritos"
+      if movie.poster
+        img.movie-detail__poster(src=movie.poster alt=`Póster de ${movie.title}`)
+      .movie-detail__body
+        h1.movie-detail__title= movie.title
+        ul.movie-detail__info
+          li #[strong Año:] #{movie.year || '—'}
+          li #[strong Director:] #{movie.director || '—'}
+          li #[strong Género:] #{movie.genre || '—'}
+          li #[strong Duración:] #{movie.runtime || '—'}
+          li #[strong Valoración:] #{movie.rating ? `⭐ ${movie.rating}` : '—'}
+          li #[strong Actores:] #{movie.actors || '—'}
+        h2 Sinopsis
+        p.movie-detail__plot= movie.plot || 'Sin sinopsis'
+        .movie-detail__actions
+          //- P3 · 6: aquí va el botón "Añadir a Favoritos"
   else
     p No hay resultados

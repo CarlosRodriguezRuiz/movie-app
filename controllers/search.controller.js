@@ -1,3 +1,5 @@
+
+const moviesService = require('../services/movies.service');
 /**
  * Búsqueda de películas. Responsable: Persona 2.
  * @module controllers/search
