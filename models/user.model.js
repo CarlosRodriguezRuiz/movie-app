@@ -32,4 +32,33 @@ const create = async (name, email, password, provider = 'local') => {
   return rows[0];
 };
 
-module.exports = { getByEmail, create };
+/**
+ * Busca un usuario por su id. NO devuelve la contraseña.
+ * @param {number} id
+ * @returns {Promise<User|undefined>} el usuario, o undefined si no existe
+ */
+const getById = async (id) => {
+  const {rows} = await query (`select id, name, email, role, provider from users where id = $1`,[id]
+
+  );
+  return rows[0];
+}
+
+/**
+ * Cambia el nombre y el email de un usuario.
+ * @param {number} id
+ * @param {string} name
+ * @param {string} email
+ * @returns {Promise<User|undefined>} el usuario ya cambiado, o undefined si no existe
+ */
+const update = async (id, name, email) => {
+  const { rows } = await query(
+    `UPDATE users set name = $1, email = $2
+     where id = $3
+     RETURNING id, name, email, role, provider`,
+    [name, email, id]
+  );
+  return rows[0];
+};
+
+module.exports = { getByEmail, create, getById, update };

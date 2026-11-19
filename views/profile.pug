@@ -3,11 +3,26 @@ extends layout
 
 block content
   h1 Mi perfil
-  //- TODO (Persona 1): formulario editable -> PUT /api/user
-  dl.profile
-    dt Nombre
-    dd= user.name
-    dt Email
-    dd= user.email
-    dt Rol
-    dd= user.role
+
+  //- Lo envía profile.js con fetch (PUT /api/user)
+  form#profile-form.form.panel(novalidate)
+    ul#profile-errors.errors(hidden)
+    p#profile-ok(hidden) ✅ Perfil actualizado
+
+    label Nombre
+      input(name="name" required value=profile.name)
+
+    label Email
+      if profile.provider === 'google'
+        input(name="email" type="email" value=profile.email readonly)
+        small.muted Entras con Google: el email no se puede cambiar.
+      else
+        input(name="email" type="email" required value=profile.email)
+
+    p.muted Rol: #{profile.role}
+
+    .form-actions
+      button.btn(type="submit") Guardar cambios
+
+block scripts
+  script(src="/js/profile.js" defer)
