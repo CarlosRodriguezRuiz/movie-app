@@ -1,5 +1,3 @@
-
-const moviesService = require('../services/movies.service');
 /**
  * Búsqueda de películas. Responsable: Persona 2.
  * @module controllers/search
@@ -24,9 +22,16 @@ const searchView = async (req, res) => {
   return res.render('search', { title: 'Buscar', query, searched: true, movies });
 };
 
-/** GET /search/:title: detalle de una película */
-// TODO: usar movies.service y render('movie-detail', { movie })
-const detailView = (req, res) => res.render('movie-detail', { title: req.params.title, movie: null });
+/**
+ * GET /search/:title: detalle de una película.
+ * Busca por título (1º OMDB, 2º Mongo) y enseña la primera que encuentra.
+ * Si no hay ninguna, la vista pinta "No hay resultados".
+ */
+const detailView = async (req, res) => {
+  const movies = await moviesService.search(req.params.title);
+  const movie = movies[0] || null;
+  return res.render('movie-detail', { title: req.params.title, movie });
+};
 
 // ---- API ----
 /** GET /api/movie/:title: devuelve en JSON la lista de películas (vacía si no hay resultados). */
