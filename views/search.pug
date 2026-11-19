@@ -1,15 +1,17 @@
 //- Persona 2. Buscador y resultados.
+//- Variables: query (texto buscado), searched (true si se ha buscado), movies (Movie[]).
 extends layout
 include partials/movie-card
 
 block content
   h1 Buscar películas
   form.search(action="/search" method="get")
-    input(type="search" name="title" placeholder="Título de la película" required)
+    input(type="search" name="title" placeholder="Título de la película" value=query required)
     button.btn(type="submit") Buscar
-  //- TODO (Persona 2): mostrar "No hay resultados" si la búsqueda no devuelve nada
+  //- TODO (Persona 2 · «No hay resultados»): mostrar el mensaje si searched && !movies.length
   .movie-grid
     each movie in movies
       +movieCard(movie)
         a.btn.btn--secondary(href=`/search/${encodeURIComponent(movie.title)}`) Ver detalle
-        //- TODO (Persona 3): botón "Añadir a Favoritos" -> POST /api/favorites { movieId, source }
+        //- Persona 3 conecta este botón (POST /api/favorites { movieId, source }) con data-id y data-source
+        button.btn.js-add-favorite(type="button" data-id=movie.id data-source=movie.source) Añadir a Favoritos
