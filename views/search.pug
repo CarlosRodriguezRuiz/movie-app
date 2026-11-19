@@ -15,3 +15,7 @@ block content
         a.btn.btn--secondary(href=`/search/${encodeURIComponent(movie.title)}`) Ver detalle
         //- Persona 3 conecta este botón (POST /api/favorites { movieId, source }) con data-id y data-source
         button.btn.js-add-favorite(type="button" data-id=movie.id data-source=movie.source) Añadir a Favoritos
+
+
+block scripts
+  script(src="/js/favorites.js" defer)

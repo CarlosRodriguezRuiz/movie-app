@@ -18,6 +18,10 @@ block content
         h2 Sinopsis
         p.movie-detail__plot= movie.plot || 'Sin sinopsis'
         .movie-detail__actions
-          //- P3 · 6: aquí va el botón "Añadir a Favoritos"
+           button.btn.js-add-favorite(type="button" data-id=movie.id data-source=movie.source) Añadir a Favoritos
   else
     p No hay resultados
+
+
+block scripts
+  script(src="/js/favorites.js" defer)
