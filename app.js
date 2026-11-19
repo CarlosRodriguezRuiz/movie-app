@@ -13,6 +13,9 @@ const { notFound, errorHandler } = require('./middlewares/error.middleware');
 
 const app = express();
 
+//Google config
+app.use(require('./config/passport').initialize());
+
 // ---- Motor de plantillas ----
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));

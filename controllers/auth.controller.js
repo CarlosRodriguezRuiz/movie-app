@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user.model');
 const { signToken } = require('../middlewares/auth.middleware');
 
+
 // ---- Vistas ----
 /** GET / y GET /login: formulario de login (+ botón de Google) */
 const loginView = (req, res) => res.render('login', { title: 'Entrar' });

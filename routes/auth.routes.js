@@ -4,6 +4,9 @@
 const router = require('express').Router();
 const auth = require('../controllers/auth.controller');
 
+const passport = require('passport');
+const { signToken } = require('../middlewares/auth.middleware');
+
 // ---- Vistas públicas ----
 router.get('/', auth.loginView);
 router.get('/login', auth.loginView);
@@ -103,8 +106,57 @@ router.post('/api/login', auth.login);
  */
 router.post('/api/logout', auth.logout);
 
-// TODO (Persona 1): OAuth con Google (passport-google-oauth20)
-// router.get('/auth/google', ...);
-// router.get('/auth/google/callback', ...);
+// ---- OAuth con Google ----
+/**
+ * @openapi
+ * /auth/google:
+ *   get:
+ *     tags: [Auth]
+ *     summary: Iniciar sesión con Google
+ *     description: >
+ *       Redirige a la pantalla de Google para elegir una cuenta.
+ *       Ábrelo en el navegador, no funciona desde "Try it out".
+ *     responses:
+ *       302:
+ *         description: Redirige a la pantalla de login de Google
+ */
+router.get('/auth/google', passport.authenticate('google', {
+  scope: ['profile', 'email'],
+  prompt: 'select_account',
+  session: false,
+}));
 
+/**
+ * @openapi
+ * /auth/google/callback:
+ *   get:
+ *     tags: [Auth]
+ *     summary: Vuelta de Google (callback de OAuth)
+ *     description: >
+ *       Google vuelve aquí con un código. Si el email no existe en la BBDD,
+ *       se crea el usuario sin contraseña (provider "google"). Después guarda
+ *       el JWT en la cookie httpOnly "token" y redirige según el rol.
+ *       No se llama a mano: lo llama Google.
+ *     parameters:
+ *       - in: query
+ *         name: code
+ *         required: true
+ *         schema: { type: string }
+ *         description: Código que manda Google para identificar al usuario
+ *     responses:
+ *       302:
+ *         description: >
+ *           Login correcto: redirige a /dashboard (user) o /movies (admin).
+ *           Si falla o el usuario cancela, redirige a /login.
+ */
+router.get('/auth/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: '/login' }),
+  (req, res) => {
+    res.cookie('token', signToken(req.user), { httpOnly: true });
+    if (req.user.role === 'admin') {
+      return res.redirect('/movies');
+    }
+    return res.redirect('/dashboard');
+  }
+);
 module.exports = router;
