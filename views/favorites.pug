@@ -10,4 +10,7 @@ block content
     each movie in movies
       +movieCard(movie)
         //- TODO (Persona 3): DELETE /api/favorites { movieId, source }
-        button.btn.btn--danger(type="button" data-id=movie.id data-source=movie.source) Quitar de Mis películas
+        button.btn.btn--danger.js-remove-favorite(type="button" data-id=movie.id data-source=movie.source) Quitar de Mis películas
+
+block scripts
+  script(src="/js/favorites.js" defer)
