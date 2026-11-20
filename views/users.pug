@@ -1,11 +1,46 @@
-//- Persona 1. Lista de usuarios con CRUD (solo admin).
+//- Persona 1. Gestión de usuarios (solo admin): crear, editar y borrar.
+//- Variables: users (lista), currentId (id del admin logueado).
 extends layout
 
 block content
-  h1 Usuarios
-  //- TODO (Persona 1): crear, editar y borrar usuarios
+  .page-header
+    h1 Usuarios
+    button#btn-new-user.btn(type="button") + Crear usuario
+
+  //- Mismo formulario para crear y editar (oculto por defecto). Lo envía admin-users.js.
+  form#user-form.form.panel(hidden novalidate)
+    h2#user-form-title Crear usuario
+    ul#user-form-errors.errors(hidden)
+    label Nombre *
+      input(name="name" required)
+    label Email *
+      input(name="email" type="email" required)
+    //- Solo al crear: al editar, el JS lo oculta.
+    label#password-field Contraseña * (mínimo 6)
+      input(name="password" type="password" minlength="6")
+    label Rol
+      select(name="role")
+        option(value="user") Usuario
+        option(value="admin") Admin
+    .form-actions
+      button.btn(type="submit") Guardar
+      button#btn-cancel-user.btn.btn--secondary(type="button") Cancelar
+
+  if !users.length
+    p.muted No hay usuarios.
+
   ul.user-list
     each u in users
-      li #{u.name} · #{u.email} · #{u.role}
-    else
-      li No hay usuarios
+      li.user-list__item
+        div
+          strong= u.name
+          br
+          span.muted #{u.email} · #{u.role}#{u.provider === 'google' ? ' · Google' : ''}
+        .user-list__actions
+          button.btn.btn--secondary.btn-edit-user(type="button" data-user=JSON.stringify(u)) Editar
+          //- El admin no se puede borrar a sí mismo: no le enseñamos el botón.
+          if u.id !== currentId
+            button.btn.btn--danger.btn-delete-user(type="button" data-id=u.id) Eliminar
+
+block scripts
+  script(src="/js/admin-users.js" defer)
