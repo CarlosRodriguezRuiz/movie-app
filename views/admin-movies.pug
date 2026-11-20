@@ -2,6 +2,7 @@
 extends layout
 include partials/movie-card
 
+
 block content
   .page-header
     h1 Gestionar películas
@@ -9,6 +10,7 @@ block content
 
   //- Mismo formulario para crear y para editar (oculto por defecto).
   //- Lo envía admin-movies.js con fetch (POST para crear, PUT para editar).
+   
   form#movie-form.form.panel(hidden novalidate)
     h2#form-title Crear o Editar película
     ul#form-errors.errors(hidden)
@@ -29,9 +31,9 @@ block content
         input(name="rating" inputmode="decimal" placeholder="7,5")
       label Actores
         input(name="actors" placeholder="Actor 1, Actor 2")
-
-    label Sinopsis
-      textarea(name="plot" rows="3")
+      label Sinopsis
+        textarea(name="plot" rows="3")
+   
 
     .form-actions
       button.btn(type="submit") Guardar
@@ -50,3 +52,4 @@ block content
 
 block scripts
   script(src="/js/admin-movies.js" defer)
+
