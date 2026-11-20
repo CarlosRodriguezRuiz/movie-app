@@ -30,6 +30,7 @@ document.querySelectorAll('.js-remove-favorite').forEach((button) => {
     const res = await sendFavorite('DELETE', button);
     if (res.ok) {
       window.location.reload()
+      return;
     }
     alert('No se ha podido quitar');
   });

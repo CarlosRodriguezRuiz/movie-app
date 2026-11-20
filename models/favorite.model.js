@@ -31,7 +31,7 @@ const add = async (userId, movieId, source) => {
 };
 
 const remove = async (userId, movieId, source) => {
-  const { rows } = await query(
+  const { rowCount } = await query(
     `DELETE FROM favorites WHERE user_id = $1  AND movie_id = $2 AND source = $3`,
     [userId, movieId, source]
   );
@@ -46,7 +46,7 @@ const remove = async (userId, movieId, source) => {
  * @returns {Promise<number>} cuántos favoritos se han borrado (0 si nadie la tenía)
  */
 const removeByMovie = async (movieId, source) => {
-  const { rowCount } = await query('DELETE FROM favorites WHERE movie_id = $1 AND source = $2', [
+  const { rowCount } = await query('DELETE FROM favorites WHEREuser movie_id = $1 AND source = $2', [
     movieId,
     source,
   ]);
