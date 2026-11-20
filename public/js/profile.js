@@ -4,7 +4,11 @@ const form = document.querySelector('#profile-form');
 const errorsList = document.querySelector('#profile-errors');
 const okMensage = document.querySelector('#profile-ok');
 
-// Pinta la lista de errores (o la esconde si no hay)
+/**
+ * Pinta la lista de errores (o la esconde si no hay).
+ * @param {string[]} messages - Mensajes de error.
+ * @returns {void}
+ */
 const showErrors = (messages) => {
   errorsList.innerHTML = '';
   messages.forEach((msg) => {

@@ -8,13 +8,21 @@ const User = require('../models/user.model');
 const { signToken } = require('../middlewares/auth.middleware');
 
 // ---- Vistas ----
-/** GET /dashboard (user): dos botones -> /search y /favorites */
+/**
+ * GET /dashboard (user): dos botones -> /search y /favorites.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {void}
+ */
 const dashboardView = (req, res) =>
   res.render('dashboard', { title: 'Panel de control', showMenu: false });
 
 /**
  * GET /profile (user y admin): mis datos en un formulario para editarlos.
  * Se leen de la BBDD (no del token) para enseñar siempre lo último guardado.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {Promise<void>}
  */
 const profileView = async (req, res) => {
   const profile = await User.getById(req.user.id);
@@ -37,7 +45,12 @@ const usersView = async (req, res) => {
 
 // ---- API: perfil propio ----
 
-/** GET /api/user: datos del usuario logueado (sin contraseña) */
+/**
+ * GET /api/user: datos del usuario logueado (sin contraseña).
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {Promise<void>} 200 con el usuario o 404 si no existe
+ */
 const getUser = async (req, res) => {
   const user = await User.getById(req.user.id);
   if (!user) {
@@ -49,6 +62,9 @@ const getUser = async (req, res) => {
 /**
  * PUT /api/user: edita el nombre y el email del usuario logueado.
  * Los datos ya llegan validados por las rutas (express-validator).
+ * @param {import('express').Request} req - body: { name, email }
+ * @param {import('express').Response} res
+ * @returns {Promise<void>} 200 con el usuario, 404 si no existe o 409 si el email ya es de otro
  */
 const updateUser = async (req, res) => {
   const current = await User.getById(req.user.id);

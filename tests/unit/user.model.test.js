@@ -38,7 +38,7 @@ describe('user.model', () => {
     expect(user).toEqual({ id: 3, name: 'Ana', email: 'ana@test.com', role: 'user' });
     expect(query).toHaveBeenCalledWith(
       expect.stringContaining('INSERT INTO users'),
-      ['Ana', 'ana@test.com', 'hash_de_bcrypt', 'local']
+      ['Ana', 'ana@test.com', 'hash_de_bcrypt', 'local', 'user']
     );
   });
 });

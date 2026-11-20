@@ -13,6 +13,9 @@ const Favorite = require('../models/favorite.model');
 
 /**
  * GET /movies: listado del admin con "Crear nueva", "Editar" y "Eliminar".
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {Promise<void>}
  */
 const adminMoviesView = async (req, res) => {
   const docs = await Movie.find().sort({ createdAt: -1 });
@@ -25,6 +28,9 @@ const adminMoviesView = async (req, res) => {
 /**
  * POST /api/movie: crea la película y la devuelve.
  * Los datos ya llegan validados por las rutas (express-validator).
+ * @param {import('express').Request} req - body: datos de la película
+ * @param {import('express').Response} res
+ * @returns {Promise<void>} 201 con la película creada
  */
 const createMovie = async (req, res) => {
   const doc = await Movie.create(req.body);
@@ -33,6 +39,9 @@ const createMovie = async (req, res) => {
 
 /**
  * PUT /api/movie/:id: edita la película y la devuelve ya cambiada.
+ * @param {import('express').Request} req - params.id: id de Mongo; body: campos a cambiar
+ * @param {import('express').Response} res
+ * @returns {Promise<void>} 200 con la película o 404 si no existe
  */
 const updateMovie = async (req, res) => {
   const { id } = req.params;
@@ -48,6 +57,9 @@ const updateMovie = async (req, res) => {
 
 /**
  * DELETE /api/movie/:id: borra la película y después sus favoritos (PostgreSQL).
+ * @param {import('express').Request} req - params.id: id de Mongo
+ * @param {import('express').Response} res
+ * @returns {Promise<void>} 200 con { message, id } o 404 si no existe
  */
 const deleteMovie = async (req, res) => {
   const { id } = req.params;

@@ -5,7 +5,11 @@
  */
 const jwt = require('jsonwebtoken');
 
-/** ¿La petición es a la API (responde JSON) o a una vista (redirige)? */
+/**
+ * ¿La petición es a la API (responde JSON) o a una vista (redirige)?
+ * @param {import('express').Request} req
+ * @returns {boolean} true si la URL empieza por /api
+ */
 const isApiRequest = (req) => req.originalUrl.startsWith('/api');
 
 /**
