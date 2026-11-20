@@ -11,6 +11,11 @@ const btnCancel = document.querySelector('#btn-cancel');
 let editingId = null;
 
 // ---- Mostrar / ocultar el formulario ----
+/**
+ * Pinta la lista de errores del formulario (o la esconde si no hay).
+ * @param {string[]} messages - Mensajes de error.
+ * @returns {void}
+ */
 
 const showErrors = (messages) => {
   formErrors.innerHTML = '';
@@ -21,6 +26,12 @@ const showErrors = (messages) => {
   });
   formErrors.hidden = messages.length === 0;
 };
+
+/**
+ * Abre el formulario: vacío para crear, o relleno para editar.
+ * @param {Object|null} movie - Película a editar, o null para crear una nueva.
+ * @returns {void}
+ */
 
 const openForm = (movie) => {
   form.reset();
@@ -43,6 +54,11 @@ const openForm = (movie) => {
   form.scrollIntoView({ behavior: 'smooth' });
 };
 
+/**
+ * Esconde el formulario y sale del modo edición.
+ * @returns {void}
+ */
+
 const closeForm = () => {
   form.hidden = true;
   editingId = null;
@@ -50,7 +66,12 @@ const closeForm = () => {
 
 // ---- Leer la respuesta de la API ----
 
-// Saca los mensajes de error de la respuesta (400 → { errors: [...] }, otros → { error })
+/**
+ * Saca los mensajes de error de la respuesta (400 → { errors: [...] }, otros → { error }).
+ * @param {Response} res - Respuesta de fetch.
+ * @returns {Promise<string[]>} lista de mensajes
+ */
+
 const getErrors = async (res) => {
   const data = await res.json().catch(() => ({}));
   if (data.errors) {

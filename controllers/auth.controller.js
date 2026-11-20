@@ -9,10 +9,20 @@ const { signToken } = require('../middlewares/auth.middleware');
 
 
 // ---- Vistas ----
-/** GET / y GET /login: formulario de login (+ botón de Google) */
+/**
+ * GET / y GET /login: formulario de login (+ botón de Google).
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {void}
+ */
 const loginView = (req, res) => res.render('login', { title: 'Entrar' });
 
-/** GET /signup: formulario de registro (+ botón de Google) */
+/**
+ * GET /signup: formulario de registro (+ botón de Google).
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {void}
+ */
 const signupView = (req, res) => res.render('signup', { title: 'Registro' });
 
 // ---- API ----
@@ -20,15 +30,19 @@ const signupView = (req, res) => res.render('signup', { title: 'Registro' });
 
 /**
  * POST /api/signup: crea el usuario, abre sesión y redirige a /dashboard.
- */
-/**
- * POST /api/signup: crea el usuario, abre sesión y redirige a /dashboard.
+ * @param {import('express').Request} req - body: { name, email, password }
+ * @param {import('express').Response} res
+ * @returns {Promise<void>}
  */
 const signup = async (req, res) => {
   const name = req.body.name?.trim();
   const email = req.body.email?.trim().toLowerCase();
   const { password } = req.body;
-  // Si algo falla, volvemos a pintar el formulario con el error (y lo que ya había escrito)
+  /**
+   * Vuelve a pintar el registro con el error y lo que ya había escrito.
+   * @param {string} error - Mensaje que se enseña al usuario.
+   * @returns {void}
+   */
   const fail = (error) => {
     return res.status(400).render('signup', {
       title: 'Registro',
@@ -63,13 +77,18 @@ const signup = async (req, res) => {
 
 /**
  * POST /api/login: comprueba email y contraseña, abre sesión y redirige según el rol.
+ * @param {import('express').Request} req - body: { email, password }
+ * @param {import('express').Response} res
+ * @returns {Promise<void>}
  */
 const login = async (req, res) => {
   const email = req.body.email?.trim().toLowerCase();
   const { password } = req.body;
 
-  // Si algo falla, volvemos al login con el mismo mensaje siempre
-  // (no decimos si lo que falla es el email o la contraseña)
+  /**
+   * Vuelve al login con un mensaje genérico (no decimos si falla el email o la contraseña).
+   * @returns {void}
+   */
   const fail = () => {
     return res.status(401).render('login', {
       title: 'Entrar',
@@ -102,7 +121,12 @@ const login = async (req, res) => {
   return res.redirect('/dashboard');
 };
 
-/** POST /api/logout: borra la cookie y vuelve al inicio */
+/**
+ * POST /api/logout: borra la cookie y vuelve al inicio.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {void}
+ */
 const logout = (req, res) => {
   res.clearCookie('token');// borra la cookie donde va el JWT
   return res.redirect('/'); // vuelve al login

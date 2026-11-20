@@ -7,6 +7,12 @@ const { connectMongo } = require('./config/db.mongo');
 
 const PORT = process.env.PORT || 3000;
 
+/**
+ * Comprueba PostgreSQL, conecta MongoDB y arranca el servidor en PORT.
+ * Si una BBDD falla, lo avisa por consola pero el servidor arranca igual.
+ * @returns {Promise<void>}
+ */
+
 const start = async () => {
   try {
     await pool.query('SELECT 1');

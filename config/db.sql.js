@@ -5,7 +5,10 @@
  * @module config/db.sql
  */
 const { Pool } = require('pg');
-
+/**
+ * Pool de conexiones a PostgreSQL (se comparte en toda la app).
+ * @type {import('pg').Pool}
+ */
 const pool = new Pool();
 
 /**

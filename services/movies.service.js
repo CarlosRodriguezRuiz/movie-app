@@ -11,15 +11,15 @@ const Movie = require('../models/movie.model');
 /**
  * Escapa los caracteres especiales de regex del texto del usuario,
  * para que "Mission: Impossible (1996)" se busque literalmente.
- * @param {string} text
- * @returns {string}
+ * @param {string} text - Texto escrito por el usuario
+ * @returns {string} El texto con los caracteres especiales escapados
  */
 const escapeRegex = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 /**
  * Busca películas por título: primero en OMDB y, si no hay nada, en MongoDB.
  * Si OMDB falla (red, API key...), el error se propaga: no se oculta cayendo a Mongo.
- * @param {string} title
+ * @param {string} title - Título (o parte del título) a buscar
  * @returns {Promise<import('./omdb.service').Movie[]>} lista vacía si no hay resultados
  */
 const search = async (title) => {
@@ -41,8 +41,8 @@ const search = async (title) => {
 
 /**
  * Devuelve una película por id y origen. Lo usan la vista detalle y Favoritos (Persona 3).
- * @param {string} id
- * @param {'omdb'|'mongo'} source
+ * @param {string} id - imdbID (OMDB) o _id de MongoDB
+ * @param {'omdb'|'mongo'} source - Origen de la película
  * @returns {Promise<import('./omdb.service').Movie|null>} null si no existe
  * @throws {Error} si source no es 'omdb' ni 'mongo' (error de programación, no "no encontrada")
  */

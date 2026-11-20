@@ -4,15 +4,26 @@
  * @module middlewares/error
  */
 
-/** 404: ninguna ruta ha respondido. */
+/**
+ * 404: ninguna ruta ha respondido. API -> JSON, vistas -> página de error.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {void}
+ */
 const notFound = (req, res) => {
   if (req.originalUrl.startsWith('/api')) return res.status(404).json({ msg: 'Ruta no encontrada' });
   return res.status(404).render('error', { title: '404', message: 'Página no encontrada' });
 };
 
-/** Manejador de errores general (4 parámetros: así Express sabe que es de errores). */
-// eslint-disable-next-line no-unused-vars
-const errorHandler = (err, req, res, next) => {
+/**
+ * Manejador de errores general (4 parámetros: así Express sabe que es de errores).
+ * @param {Error & {status?: number}} err - Error recibido (status opcional, 500 por defecto).
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next - No se usa, pero Express lo necesita.
+ * @returns {void}
+ */
+  const errorHandler = (err, req, res, next) => { // eslint-disable-line no-unused-vars
   const status = err.status || 500;
   if (process.env.NODE_ENV !== 'test') console.error(err);
   if (req.originalUrl.startsWith('/api')) return res.status(status).json({ msg: err.message });

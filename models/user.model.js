@@ -16,12 +16,23 @@ const { query } = require('../config/db.sql');
  */
 
 // TODO (Persona 1): getAll, getById, getByEmail, create, update, remove
-
+/**
+ * Busca un usuario por su email. Incluye la contraseña (hash) porque la necesita el login.
+ * @param {string} email
+ * @returns {Promise<User|undefined>} el usuario, o undefined si no existe
+ */
 const getByEmail = async (email) => {
   const { rows } = await query('SELECT * FROM users WHERE email = $1', [email]);
   return rows[0];
 };
-
+/**
+ * Crea un usuario nuevo.
+ * @param {string} name
+ * @param {string} email
+ * @param {string|null} password - Hash bcrypt (null si entra con Google).
+ * @param {'local'|'google'} [provider='local']
+ * @returns {Promise<{id:number, name:string, email:string, role:string}>} el usuario creado (sin contraseña)
+ */
 const create = async (name, email, password, provider = 'local') => {
   const { rows } = await query(
     `INSERT INTO users (name, email, password, provider)
