@@ -6,6 +6,12 @@
  */
 const { Schema, model } = require('mongoose');
 
+/**
+ * Esquema de película: campos obligatorios + opcionales para la vista detalle.
+ * timestamps añade createdAt y updatedAt.
+ * @type {import('mongoose').Schema}
+ */
+
 const movieSchema = new Schema(
   {
     title: { type: String, required: true, trim: true },

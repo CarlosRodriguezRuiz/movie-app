@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 /**
  * Conecta con MongoDB usando MONGO_URI del .env.
- * @returns {Promise<typeof mongoose>}
+ * @returns {Promise<typeof mongoose>} la instancia de mongoose ya conectada
  */
 const connectMongo = () => mongoose.connect(process.env.MONGO_URI);
 

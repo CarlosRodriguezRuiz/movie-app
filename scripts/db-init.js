@@ -8,6 +8,11 @@ const fs = require('fs');
 const path = require('path');
 const { pool } = require('../config/db.sql');
 
+/**
+ * Ejecuta schema.sql y seed.sql, en ese orden.
+ * @returns {Promise<void>}
+ */
+
 const run = async () => {
   for (const file of ['schema.sql', 'seed.sql']) {
     const sql = fs.readFileSync(path.join(__dirname, '..', 'db', file), 'utf8');

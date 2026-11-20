@@ -5,7 +5,13 @@
  */
 const { validationResult } = require('express-validator');
 
-/** @type {import('express').RequestHandler} */
+/**
+ * Si express-validator encontró errores responde 400 con la lista; si no, sigue.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ * @returns {void}
+ */
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (errors.isEmpty()) return next();

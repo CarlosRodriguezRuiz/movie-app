@@ -5,7 +5,13 @@
 const notImplemented = require('../utils/notImplemented');
 
 // ---- Vistas ----
-/** GET /favorites (user): "Mis películas" con botón "Quitar de Mis películas" */
+/**
+ * GET /favorites (user): "Mis películas" con botón "Quitar de Mis películas".
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @returns {void}
+ */
+
 const favoritesView = (req, res) => res.render('favorites', { title: 'Mis películas', movies: [] });
 
 // ---- API ----
