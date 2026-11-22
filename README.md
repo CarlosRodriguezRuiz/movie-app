@@ -51,10 +51,7 @@ Acceso con email y contraseña o con Google; desde aquí se llega también al re
 ### Panel de películas (admin)
 El administrador ve solo las películas de MongoDB, es decir, las que **no** existen en OMDB. «Crear nueva» abre el formulario (con validación de los datos) y cada tarjeta tiene **Editar** y **Eliminar**.
 
-<p align="center">
-  <img src="docs/img/admin-formulario.png" alt="Formulario para crear o editar una película" width="49%">
-  <img src="docs/img/admin-listado.png" alt="Listado de películas con Editar y Eliminar" width="49%">
-</p>
+<p align="center"><img src="docs/img/admin-peliculas.png" alt="Panel de películas: formulario para crear o editar y tarjeta con Editar y Eliminar" width="70%"></p>
 
 ### Gestión de usuarios (admin)
 Alta, edición y baja de usuarios, eligiendo su rol (`user` o `admin`). Los que se registraron con Google aparecen marcados.
