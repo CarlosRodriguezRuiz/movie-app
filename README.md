@@ -46,25 +46,22 @@ Tras el login, el usuario va a `/dashboard` y el administrador a `/movies`.
 ### Entrar
 Acceso con email y contraseña o con Google; desde aquí se llega también al registro.
 
-<p align="center"><img src="docs/img/login.png" alt="Pantalla de login" width="60%"></p>
+<p align="center"><img src="img/login.png" alt="Pantalla de login" width="60%"></p>
 
 ### Panel de películas (admin)
 El administrador ve solo las películas de MongoDB, es decir, las que **no** existen en OMDB. «Crear nueva» abre el formulario (con validación de los datos) y cada tarjeta tiene **Editar** y **Eliminar**.
 
-<p align="center">
-  <img src="docs/img/admin-formulario.png" alt="Formulario para crear o editar una película" width="49%">
-  <img src="docs/img/admin-listado.png" alt="Listado de películas con Editar y Eliminar" width="49%">
-</p>
+<p align="center"><img src="img/admin-peliculas.png" alt="Panel de películas: formulario para crear o editar y tarjeta con Editar y Eliminar" width="70%"></p>
 
 ### Gestión de usuarios (admin)
 Alta, edición y baja de usuarios, eligiendo su rol (`user` o `admin`). Los que se registraron con Google aparecen marcados.
 
-<p align="center"><img src="docs/img/admin-usuarios.png" alt="Gestión de usuarios" width="80%"></p>
+<p align="center"><img src="img/admin-usuarios.png" alt="Gestión de usuarios" width="80%"></p>
 
 ### Perfil
 Cada persona edita su nombre y su email; el rol solo se muestra.
 
-<p align="center"><img src="docs/img/perfil.png" alt="Perfil del usuario" width="80%"></p>
+<p align="center"><img src="img/perfil.png" alt="Perfil del usuario" width="80%"></p>
 
 ## 🏗️ Cómo está montado
 
@@ -164,7 +161,7 @@ Antes hay que tener PostgreSQL con la base `movie_app` creada (`CREATE DATABASE 
 
 Si todo va bien, el servidor confirma las dos conexiones y la dirección de Swagger:
 
-<p align="center"><img src="docs/img/arranque.png" alt="Arranque del servidor con PostgreSQL y MongoDB conectados" width="60%"></p>
+<p align="center"><img src="img/arranque.png" alt="Arranque del servidor con PostgreSQL y MongoDB conectados" width="60%"></p>
 
 - **Swagger:** http://localhost:3000/api-docs
 - **Usuarios de prueba:** `user@test.com` y `admin@test.com`, contraseña `123456`.
